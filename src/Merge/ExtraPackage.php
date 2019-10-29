@@ -243,6 +243,10 @@ class ExtraPackage
             return;
         }
 
+        $requires = array_filter($requires, function ($key){
+            return stripos($key, 'planetits/') !== 0;
+        }, ARRAY_FILTER_USE_KEY);
+
         $this->mergeStabilityFlags($root, $requires);
 
         $requires = $this->replaceSelfVersionDependencies(
