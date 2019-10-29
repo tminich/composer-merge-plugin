@@ -243,9 +243,17 @@ class ExtraPackage
             return;
         }
 
-        $requires = array_filter($requires, function ($key){
-            return stripos($key, 'planetits/') !== 0;
-        }, ARRAY_FILTER_USE_KEY);
+        $ignoreRequire = $state->getIgnoreRequire();
+        if (!empty($ignoreRequire)) {
+            $requires = array_filter($requires, function ($name) use ($ignoreRequire) {
+                foreach ($ignoreRequire as $ignorePattern) {
+                    if (fnmatch($ignorePattern, $name)) {
+                        return false;
+                    }
+                }
+                return true;
+            }, ARRAY_FILTER_USE_KEY);
+        }
 
         $this->mergeStabilityFlags($root, $requires);
 
